@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Will you be my Valentine? 💘</title>
+  <title>Anchal, will you be my Valentine? 💘</title>
   <style>
     :root{
       --bg1:#0b0b12; --bg2:#1a1033;
@@ -21,7 +21,7 @@
       overflow:hidden;
     }
     .card{
-      width:min(720px, 92vw);
+      width:min(820px, 92vw);
       border:1px solid var(--stroke);
       background: var(--card);
       border-radius:24px;
@@ -30,8 +30,21 @@
       backdrop-filter: blur(10px);
       position:relative;
     }
+
+    /* Reset button in the corner */
+    #reset{
+      position:absolute;
+      top:16px;
+      right:16px;
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:800;
+      font-size: 14px;
+      opacity:.9;
+    }
+
     h1{
-      margin:0 0 8px;
+      margin:10px 0 8px;
       font-size: clamp(28px, 4.2vw, 52px);
       letter-spacing:-.02em;
       text-align:center;
@@ -41,16 +54,19 @@
       text-align:center;
       color:var(--muted);
       line-height:1.5;
+      font-size: 18px;
     }
 
+    /* Invisible stage: keeps "No" constrained without showing a box */
     .stage{
       position:relative;
       height:240px;
-      border-radius:18px;
-      border:1px dashed rgba(255,255,255,.18);
-      background: rgba(0,0,0,.18);
-      overflow:hidden;
       margin-top:18px;
+
+      /* remove the box visuals */
+      border:none;
+      background: transparent;
+      overflow:hidden;
     }
 
     .btn{
@@ -72,36 +88,52 @@
     }
     #yes:hover{ border-color: rgba(255,77,109,.95); }
 
-    /* layout: yes is normal, no is absolute and moves */
+    /* No moves around inside the stage */
+    #no{
+      position:absolute;
+      left: 58%;
+      top: 55%;
+      transform: translate(-50%,-50%);
+      touch-action: none;
+      border-radius: 18px;
+    }
+
     .controls{
       display:flex;
       justify-content:center;
       gap:14px;
-      margin-top:18px;
-    }
-
-    #no{
-      position:absolute;
-      left: 55%;
-      top: 55%;
-      transform: translate(-50%,-50%);
-      touch-action: none;
-    }
-
-    .success{
-      display:none;
-      text-align:center;
-      padding:10px 6px 0;
       margin-top:10px;
     }
+
+    /* Video reveal */
+    .success{
+      display:none;
+      margin-top:18px;
+      text-align:center;
+    }
     .success h2{
-      margin:12px 0 6px;
+      margin:0 0 12px;
       font-size: clamp(22px, 3.2vw, 34px);
     }
-    .success .small{
-      color:var(--muted);
-      margin-top:6px;
+    .vidwrap{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.22);
+      border-radius: 18px;
+      overflow:hidden;
+      width:min(560px, 100%);
+      margin: 0 auto;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+    }
+    video{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+    .small{
+      color: rgba(199,199,238,.9);
+      margin-top:10px;
       font-size: 15px;
+      white-space: pre-line;
     }
 
     .footer{
@@ -123,7 +155,9 @@
   <div class="card" id="card">
     <canvas id="fx"></canvas>
 
-    <h1>Will you be my Valentine? 💘</h1>
+    <button class="btn" id="reset" aria-label="Reset">Reset</button>
+
+    <h1 id="title"></h1>
     <p id="subtitle">Choose wisely 🙂</p>
 
     <div class="stage" id="stage">
@@ -132,11 +166,19 @@
 
     <div class="controls">
       <button class="btn" id="yes" aria-label="Yes">Yes</button>
-      <button class="btn" id="reset" aria-label="Reset">Reset</button>
     </div>
 
     <div class="success" id="success">
       <h2>Yesss 🥰</h2>
+
+      <div class="vidwrap">
+        <!-- Put your video file in the repo and name it: anchal.mp4 -->
+        <video id="valVid" controls playsinline preload="auto">
+          <source src="anchal.mp4" type="video/mp4">
+          Your browser can’t play this video.
+        </video>
+      </div>
+
       <div class="small" id="message"></div>
     </div>
 
@@ -145,179 +187,18 @@
 
   <script>
     // ====== Customize these ======
-    const HER_NAME = "Babe";
+    const HER_NAME = "Anchal";
     const YOUR_NAME = "Sunny";
     const WIN_MESSAGE = `Okay ${HER_NAME}, it’s official. 💗
-Dinner is on me. You pick dessert.
-Love, ${YOUR_NAME}`;
+Now press play.`;
+    // If your video file name is different, change it in the <source src="..."> above.
     // ============================
 
+    document.getElementById("title").textContent = `${HER_NAME}, will you be my Valentine? 💘`;
+    document.getElementById("message").textContent = WIN_MESSAGE;
+
     const stage = document.getElementById("stage");
-    const noBtn = document.getElementById("no");
-    const yesBtn = document.getElementById("yes");
-    const resetBtn = document.getElementById("reset");
-    const success = document.getElementById("success");
-    const msg = document.getElementById("message");
-    const subtitle = document.getElementById("subtitle");
+    const
 
-    msg.textContent = WIN_MESSAGE;
-
-    // Make sure "No" starts somewhere valid
-    function placeNoButton(x, y){
-      const s = stage.getBoundingClientRect();
-      const b = noBtn.getBoundingClientRect();
-
-      // clamp so it stays inside stage
-      const pad = 10;
-      const maxX = s.width - b.width - pad;
-      const maxY = s.height - b.height - pad;
-
-      const nx = Math.min(Math.max(x, pad), maxX);
-      const ny = Math.min(Math.max(y, pad), maxY);
-
-      noBtn.style.left = nx + "px";
-      noBtn.style.top  = ny + "px";
-      noBtn.style.transform = "translate(0,0)";
-    }
-
-    function randomSpotFarFrom(cursorX, cursorY){
-      const s = stage.getBoundingClientRect();
-      const b = noBtn.getBoundingClientRect();
-      const pad = 10;
-
-      const spots = [];
-      for(let i=0;i<24;i++){
-        const x = pad + Math.random() * (s.width - b.width - pad*2);
-        const y = pad + Math.random() * (s.height - b.height - pad*2);
-        const dx = x - cursorX, dy = y - cursorY;
-        const dist = Math.hypot(dx, dy);
-        spots.push({x,y,dist});
-      }
-      spots.sort((a,b)=>b.dist - a.dist);
-      return spots[0];
-    }
-
-    // "No" dodges when cursor gets near
-    function maybeDodge(clientX, clientY){
-      const s = stage.getBoundingClientRect();
-      const b = noBtn.getBoundingClientRect();
-
-      // cursor position relative to stage
-      const cx = clientX - s.left;
-      const cy = clientY - s.top;
-
-      // button center relative to stage
-      const bx = (b.left - s.left) + b.width/2;
-      const by = (b.top  - s.top)  + b.height/2;
-
-      const dist = Math.hypot(cx - bx, cy - by);
-
-      // tweak this: smaller = harder to click No
-      const DODGE_RADIUS = 90;
-
-      if(dist < DODGE_RADIUS){
-        const spot = randomSpotFarFrom(cx, cy);
-        placeNoButton(spot.x, spot.y);
-        subtitle.textContent = "Hmm… interesting choice 😌";
-      }
-    }
-
-    // Desktop: move on mouse proximity
-    stage.addEventListener("mousemove", (e) => maybeDodge(e.clientX, e.clientY));
-
-    // Mobile: dodge when they try to tap it (touchstart)
-    noBtn.addEventListener("touchstart", (e) => {
-      const t = e.touches[0];
-      maybeDodge(t.clientX, t.clientY);
-      e.preventDefault();
-    }, {passive:false});
-
-    // If they somehow click No
-    noBtn.addEventListener("click", () => {
-      subtitle.textContent = "Nice try 😂";
-      // immediately move it anyway
-      const s = stage.getBoundingClientRect();
-      placeNoButton(20 + Math.random()*(s.width-120), 20 + Math.random()*(s.height-80));
-    });
-
-    // Yes flow
-    yesBtn.addEventListener("click", () => {
-      success.style.display = "block";
-      subtitle.textContent = "Correct answer 😇";
-      burst();
-    });
-
-    resetBtn.addEventListener("click", () => {
-      success.style.display = "none";
-      subtitle.textContent = "Choose wisely 🙂";
-      // re-center-ish
-      placeNoButton(stage.clientWidth*0.55, stage.clientHeight*0.55);
-      clearConfetti();
-    });
-
-    // initial placement after layout
-    requestAnimationFrame(() => {
-      placeNoButton(stage.clientWidth*0.55, stage.clientHeight*0.55);
-    });
-
-    // ---- confetti ----
-    const canvas = document.getElementById("fx");
-    const ctx = canvas.getContext("2d");
-    const card = document.getElementById("card");
-    let W=0,H=0, conf=[];
-    function resize(){
-      const r = card.getBoundingClientRect();
-      canvas.width = Math.floor(r.width * devicePixelRatio);
-      canvas.height = Math.floor(r.height * devicePixelRatio);
-      canvas.style.width = r.width + "px";
-      canvas.style.height = r.height + "px";
-      W = canvas.width; H = canvas.height;
-      ctx.setTransform(1,0,0,1,0,0);
-    }
-    window.addEventListener("resize", resize);
-    resize();
-
-    function burst(){
-      conf = [];
-      const colors = ["#ff4d6d","#ffd166","#8ecae6","#cdb4db","#a7f3d0","#ffffff"];
-      for(let i=0;i<160;i++){
-        conf.push({
-          x: W/2 + (Math.random()-0.5)*80,
-          y: H*0.22 + (Math.random()-0.5)*40,
-          vx: (Math.random()-0.5)*11,
-          vy: Math.random()*-10 - 4,
-          g: 0.26 + Math.random()*0.12,
-          s: 3 + Math.random()*4.5,
-          a: 1,
-          c: colors[(Math.random()*colors.length)|0],
-          r: Math.random()*Math.PI
-        });
-      }
-    }
-    function clearConfetti(){ conf = []; }
-
-    function tick(){
-      ctx.clearRect(0,0,W,H);
-      for(const p of conf){
-        p.vy += p.g;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.r += 0.12;
-        p.a *= 0.993;
-        ctx.globalAlpha = p.a;
-        ctx.fillStyle = p.c;
-        ctx.save();
-        ctx.translate(p.x,p.y);
-        ctx.rotate(p.r);
-        ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s*1.6);
-        ctx.restore();
-      }
-      ctx.globalAlpha = 1;
-      requestAnimationFrame(tick);
-    }
-    tick();
-  </script>
-</body>
-</html>
 
 
