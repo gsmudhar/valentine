@@ -6,91 +6,128 @@
   <title>Anchal, will you be my Valentine? 💘</title>
   <style>
     :root{
-      --bg1:#0b0b12; --bg2:#1a1033;
-      --card: rgba(255,255,255,.06);
-      --stroke: rgba(255,255,255,.14);
-      --text:#f7f7ff; --muted:#c7c7ee;
+      --pink-bg: #ffb3c7;
+      --pink-bg-2:#ffd1dc;
+      --card: rgba(255,255,255,.92);
+      --stroke: rgba(0,0,0,.08);
+      --text:#121225;
+      --muted:#5b5b75;
       --yes:#ff4d6d;
     }
     *{ box-sizing:border-box; }
     body{
       margin:0; min-height:100vh; display:grid; place-items:center;
-      background: radial-gradient(1200px 700px at 50% 20%, var(--bg2), var(--bg1) 60%);
+      background: radial-gradient(1200px 700px at 50% 20%, var(--pink-bg-2), var(--pink-bg) 60%);
       color:var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       overflow:hidden;
+      padding: 18px 0;
     }
+
     .card{
       width:min(820px, 92vw);
       border:1px solid var(--stroke);
       background: var(--card);
-      border-radius:24px;
-      padding:32px 22px 26px;
-      box-shadow: 0 30px 90px rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);
+      border-radius:26px;
+      padding:34px 24px 26px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.18);
       position:relative;
+      overflow:hidden;
     }
 
-    /* Reset button in the corner */
+    /* Reset button in corner */
     #reset{
       position:absolute;
-      top:16px;
-      right:16px;
+      top:14px;
+      right:14px;
       padding:10px 12px;
       border-radius:14px;
       font-weight:800;
       font-size: 14px;
-      opacity:.9;
+      opacity:.85;
       z-index: 5;
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.75);
+      color: var(--text);
+      cursor: pointer;
     }
+    #reset:hover{ opacity:1; }
 
     h1{
-      margin:10px 0 8px;
-      font-size: clamp(28px, 4.2vw, 52px);
+      margin:0 0 10px;
+      font-size: clamp(28px, 4.4vw, 54px);
       letter-spacing:-.02em;
       text-align:center;
     }
-    p{
-      margin:0 0 18px;
+
+    /* White box for the subtitle text */
+    .subtitleBox{
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto 18px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
       text-align:center;
-      color:var(--muted);
-      line-height:1.5;
-      font-size: 18px;
+    }
+    #subtitle{
+      margin:0;
+      color: var(--muted);
+      line-height:1.4;
+      font-size: 17px;
+      font-weight: 650;
     }
 
-    /* Invisible stage: keeps "No" constrained without showing a box */
+    /* Cat GIF on front page */
+    .catWrap{
+      display:flex;
+      justify-content:center;
+      margin: 8px 0 10px;
+    }
+    .catWrap img{
+      width: min(240px, 70vw);
+      height: auto;
+      border-radius: 18px;
+      border: 1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.6);
+      box-shadow: 0 18px 55px rgba(0,0,0,.10);
+    }
+
+    /* Invisible stage for no button movement */
     .stage{
       position:relative;
-      height:240px;
-      margin-top:18px;
-      border:none;
-      background: transparent;
+      height:230px;
+      margin-top:6px;
       overflow:hidden;
     }
 
     .btn{
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.06);
+      border:1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.70);
       color: var(--text);
       padding:14px 18px;
       border-radius:16px;
-      font-weight:800;
+      font-weight:900;
       cursor:pointer;
       user-select:none;
-      transition: transform .08s ease, border-color .2s ease, background .2s ease;
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: 0 16px 35px rgba(0,0,0,.10);
     }
     .btn:active{ transform: scale(.98); }
 
     #yes{
-      background: linear-gradient(180deg, rgba(255,77,109,.45), rgba(255,77,109,.18));
-      border-color: rgba(255,77,109,.65);
+      background: linear-gradient(180deg, rgba(255,77,109,.55), rgba(255,77,109,.25));
+      border-color: rgba(255,77,109,.55);
+      color: #fff;
+      text-shadow: 0 1px 0 rgba(0,0,0,.12);
     }
     #yes:hover{ border-color: rgba(255,77,109,.95); }
 
-    /* No moves around inside the stage */
     #no{
       position:absolute;
-      left: 58%;
+      left: 60%;
       top: 55%;
       transform: translate(-50%,-50%);
       touch-action: none;
@@ -104,7 +141,6 @@
       margin-top:10px;
     }
 
-    /* GIF reveal */
     .success{
       display:none;
       margin-top:18px;
@@ -115,19 +151,18 @@
       font-size: clamp(22px, 3.2vw, 34px);
     }
     .vidwrap{
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.22);
+      border:1px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.75);
       border-radius: 18px;
       overflow:hidden;
       width:min(560px, 100%);
       margin: 0 auto;
-      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      box-shadow: 0 18px 60px rgba(0,0,0,.14);
     }
     .gif{
       width:100%;
       display:block;
     }
-
     .fade-in {
       animation: fadeIn 0.6s ease forwards;
     }
@@ -137,17 +172,19 @@
     }
 
     .small{
-      color: rgba(199,199,238,.9);
-      margin-top:10px;
-      font-size: 15px;
+      color: #3d3d58;
+      margin-top:12px;
+      font-size: 16px;
       white-space: pre-line;
+      font-weight: 650;
     }
 
     .footer{
-      margin-top:16px;
+      margin-top:18px;
       text-align:center;
-      color: rgba(199,199,238,.85);
+      color: rgba(0,0,0,.45);
       font-size: 13px;
+      font-weight: 650;
     }
 
     canvas{
@@ -162,10 +199,18 @@
   <div class="card" id="card">
     <canvas id="fx"></canvas>
 
-    <button class="btn" id="reset" aria-label="Reset">Reset</button>
+    <button id="reset" aria-label="Reset">Reset</button>
 
     <h1 id="title"></h1>
-    <p id="subtitle">Choose wisely 🙂</p>
+
+    <div class="subtitleBox">
+      <p id="subtitle">Choose wisely 🙂</p>
+    </div>
+
+    <!-- Front page cat -->
+    <div class="catWrap" id="catWrap">
+      <img src="cat.gif" alt="please cat" />
+    </div>
 
     <div class="stage" id="stage">
       <button class="btn" id="no" aria-label="No">No</button>
@@ -179,8 +224,8 @@
       <h2>Yesss 🥰</h2>
 
       <div class="vidwrap">
-        <!-- Upload your GIF to the repo and name it: anchal.gif -->
-        <img id="valGif" class="gif fade-in" src="anchal.gif" alt="Anchal" />
+        <!-- Upload your tribute GIF and name it: anchal.gif -->
+        <img id="valGif" class="gif fade-in" src="anchal.gif" alt="tribute gif" />
       </div>
 
       <div class="small" id="message"></div>
@@ -193,10 +238,12 @@
     // ====== Customize these ======
     const HER_NAME = "Anchal";
     const YOUR_NAME = "Sunny";
-    const WIN_MESSAGE = `Okay ${HER_NAME}, it’s official. 💗
-Happy Valentine’s Day.
-Love, ${YOUR_NAME}`;
-    // If your GIF file name is different, change the src="anchal.gif" above.
+    const WIN_MESSAGE = `here's a tribute to ur excellent dancing haha
+happy valentines day!
+love ${YOUR_NAME.toLowerCase()}`;
+    // Make sure you upload:
+    //  - cat.gif  (front page)
+    //  - anchal.gif (after yes)
     // ============================
 
     document.getElementById("title").textContent = `${HER_NAME}, will you be my Valentine? 💘`;
@@ -208,9 +255,19 @@ Love, ${YOUR_NAME}`;
     const resetBtn = document.getElementById("reset");
     const success = document.getElementById("success");
     const subtitle = document.getElementById("subtitle");
+    const catWrap = document.getElementById("catWrap");
 
-    // Optional: escalating "No" text
-    const NO_LINES = ["No", "Wait… really?", "Try again 😌", "Be serious 😭", "Anchal…", "Ok you’re just clicking for fun"];
+    // Looping "No" lines (no stalling)
+    const NO_LINES = [
+      "No",
+      "Wait… really?",
+      "Try again 😌",
+      "Be serious 😭",
+      "Anchal…",
+      "Ok you’re just clicking for fun",
+      "One more time? 😇",
+      "C’mon pls 🥺"
+    ];
     let noCount = 0;
 
     function placeNoButton(x, y){
@@ -235,7 +292,7 @@ Love, ${YOUR_NAME}`;
       const pad = 8;
 
       const spots = [];
-      for(let i=0;i<24;i++){
+      for(let i=0;i<26;i++){
         const x = pad + Math.random() * (s.width - b.width - pad*2);
         const y = pad + Math.random() * (s.height - b.height - pad*2);
         const dist = Math.hypot(x - cursorX, y - cursorY);
@@ -243,6 +300,11 @@ Love, ${YOUR_NAME}`;
       }
       spots.sort((a,b)=>b.dist - a.dist);
       return spots[0];
+    }
+
+    function nextNoText(){
+      noCount = (noCount + 1) % NO_LINES.length; // <-- loops forever
+      noBtn.textContent = NO_LINES[noCount];
     }
 
     function maybeDodge(clientX, clientY){
@@ -259,19 +321,17 @@ Love, ${YOUR_NAME}`;
       const DODGE_RADIUS = 95;
 
       if(dist < DODGE_RADIUS){
-        noCount = Math.min(noCount + 1, NO_LINES.length - 1);
-        noBtn.textContent = NO_LINES[noCount];
-
+        nextNoText();
         const spot = randomSpotFarFrom(cx, cy);
         placeNoButton(spot.x, spot.y);
         subtitle.textContent = "Hmm… interesting choice 😉";
       }
     }
 
-    // Desktop: dodge on mouse proximity
+    // Desktop
     stage.addEventListener("mousemove", (e) => maybeDodge(e.clientX, e.clientY));
 
-    // Mobile: dodge when they try to tap it
+    // Mobile
     noBtn.addEventListener("touchstart", (e) => {
       const t = e.touches[0];
       maybeDodge(t.clientX, t.clientY);
@@ -281,6 +341,7 @@ Love, ${YOUR_NAME}`;
     // If they somehow click No
     noBtn.addEventListener("click", () => {
       subtitle.textContent = "Nice try 😂";
+      nextNoText();
       const s = stage.getBoundingClientRect();
       placeNoButton(10 + Math.random()*(s.width-120), 10 + Math.random()*(s.height-80));
     });
@@ -289,6 +350,8 @@ Love, ${YOUR_NAME}`;
       success.style.display = "block";
       subtitle.textContent = "Correct answer 😇";
       burst();
+      // hide cat once she says yes
+      if (catWrap) catWrap.style.display = "none";
       success.scrollIntoView({behavior:"smooth", block:"start"});
     });
 
@@ -296,14 +359,15 @@ Love, ${YOUR_NAME}`;
       success.style.display = "none";
       subtitle.textContent = "Choose wisely 🙂";
       noCount = 0;
-      noBtn.textContent = "No";
-      placeNoButton(stage.clientWidth*0.58, stage.clientHeight*0.55);
+      noBtn.textContent = NO_LINES[0];
+      placeNoButton(stage.clientWidth*0.60, stage.clientHeight*0.55);
       clearConfetti();
+      if (catWrap) catWrap.style.display = "flex";
       window.scrollTo({top:0, behavior:"smooth"});
     });
 
     requestAnimationFrame(() => {
-      placeNoButton(stage.clientWidth*0.58, stage.clientHeight*0.55);
+      placeNoButton(stage.clientWidth*0.60, stage.clientHeight*0.55);
     });
 
     // ---- confetti ----
@@ -326,7 +390,7 @@ Love, ${YOUR_NAME}`;
     function burst(){
       conf = [];
       const colors = ["#ff4d6d","#ffd166","#8ecae6","#cdb4db","#a7f3d0","#ffffff"];
-      for(let i=0;i<160;i++){
+      for(let i=0;i<170;i++){
         conf.push({
           x: W/2 + (Math.random()-0.5)*80,
           y: H*0.22 + (Math.random()-0.5)*40,
@@ -365,7 +429,3 @@ Love, ${YOUR_NAME}`;
   </script>
 </body>
 </html>
-
-
-
-
